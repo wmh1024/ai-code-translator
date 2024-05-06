@@ -1,29 +1,25 @@
-# AI Code Translator
+# AI代码翻译器
 
-Use AI to translate code from one language to another.
+使用人工智能将代码从一种语言翻译成另一种语言。
 
-![AI Code Translator](./public/screenshot.png)
+![AI代码翻译器](./public/screenshot.png)
 
-## Running Locally
+## 本地运行
 
-**1. Clone Repo**
+**1. 克隆仓库**
 
 ```bash
-git clone https://github.com/mckaywrigley/ai-code-translator.git
+git clone https://github.com/wmh1024/ai-code-translator.git
 ```
 
-**2. Install Dependencies**
+**2. 安装依赖**
 
 ```bash
 npm i
 ```
 
-**3. Run App**
+**3. 运行应用**
 
 ```bash
 npm run dev
 ```
-
-## Contact
-
-If you have any questions, feel free to reach out to me on [Twitter](https://twitter.com/mckaywrigley).
