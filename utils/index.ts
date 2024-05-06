@@ -1,9 +1,5 @@
 import endent from 'endent';
-import {
-  createParser,
-  ParsedEvent,
-  ReconnectInterval,
-} from 'eventsource-parser';
+import {createParser, ParsedEvent, ReconnectInterval} from "eventsource-parser";
 
 const createPrompt = (
   inputLanguage: string,
@@ -77,12 +73,13 @@ export const OpenAIStream = async (
   inputCode: string,
   model: string,
   key: string,
+  baseUrl: string
 ) => {
   const prompt = createPrompt(inputLanguage, outputLanguage, inputCode);
 
-  const system = { role: 'system', content: prompt };
+  const system = {role: 'system', content: prompt};
 
-  const res = await fetch(`https://api.openai.com/v1/chat/completions`, {
+  const res = await fetch(`${baseUrl}/v1/chat/completions`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${key || process.env.OPENAI_API_KEY}`,

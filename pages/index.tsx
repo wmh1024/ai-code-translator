@@ -1,11 +1,12 @@
-import { APIKeyInput } from '@/components/APIKeyInput';
-import { CodeBlock } from '@/components/CodeBlock';
-import { LanguageSelect } from '@/components/LanguageSelect';
-import { ModelSelect } from '@/components/ModelSelect';
-import { TextBlock } from '@/components/TextBlock';
-import { OpenAIModel, TranslateBody } from '@/types/types';
+import {APIKeyInput} from '@/components/APIKeyInput';
+import {CodeBlock} from '@/components/CodeBlock';
+import {LanguageSelect} from '@/components/LanguageSelect';
+import {ModelSelect} from '@/components/ModelSelect';
+import {TextBlock} from '@/components/TextBlock';
+import {OpenAIModel, TranslateBody} from '@/types/types';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
+import {BaseUrlInput} from "@/components/BaseUrlInput";
 
 export default function Home() {
   const [inputLanguage, setInputLanguage] = useState<string>('JavaScript');
@@ -16,28 +17,29 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [hasTranslated, setHasTranslated] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
+  const [baseUrl, setBaseUrl] = useState<string>('https://ai.wmhwiki.cn/api');
 
   const handleTranslate = async () => {
     const maxCodeLength = model === 'gpt-3.5-turbo' ? 6000 : 12000;
 
     if (!apiKey) {
-      alert('Please enter an API key.');
+      alert('请输入 API key。');
       return;
     }
 
     if (inputLanguage === outputLanguage) {
-      alert('Please select different languages.');
+      alert('请选择不同的语言！');
       return;
     }
 
     if (!inputCode) {
-      alert('Please enter some code.');
+      alert('输入不能为空。');
       return;
     }
 
     if (inputCode.length > maxCodeLength) {
       alert(
-        `Please enter code less than ${maxCodeLength} characters. You are currently at ${inputCode.length} characters.`,
+        `请输入少于 ${maxCodeLength} 个字符的代码。您当前已输入 ${inputCode.length} 个字符。`
       );
       return;
     }
@@ -53,6 +55,7 @@ export default function Home() {
       inputCode,
       model,
       apiKey,
+      baseUrl
     };
 
     const response = await fetch('/api/translate', {
@@ -84,7 +87,7 @@ export default function Home() {
     let code = '';
 
     while (!done) {
-      const { value, done: doneReading } = await reader.read();
+      const {value, done: doneReading} = await reader.read();
       done = doneReading;
       const chunkValue = decoder.decode(value);
 
@@ -109,8 +112,12 @@ export default function Home() {
 
   const handleApiKeyChange = (value: string) => {
     setApiKey(value);
-
     localStorage.setItem('apiKey', value);
+  };
+
+  const handleBaseUrlChange = (value: string) => {
+    setBaseUrl(value);
+    localStorage.setItem('baseurl', value);
   };
 
   useEffect(() => {
@@ -130,46 +137,53 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Code Translator</title>
+        <title>代码转译器 | Code Translator</title>
         <meta
           name="description"
           content="Use AI to translate code from one language to another."
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="icon" href="/favicon.ico"/>
       </Head>
       <div className="flex h-full min-h-screen flex-col items-center bg-[#0E1117] px-4 pb-20 text-neutral-200 sm:px-10">
         <div className="mt-10 flex flex-col items-center justify-center sm:mt-20">
-          <div className="text-4xl font-bold">AI Code Translator</div>
+          <div className="text-4xl font-bold">AI 代码转译器</div>
+
         </div>
 
         <div className="mt-6 text-center text-sm">
-          <APIKeyInput apiKey={apiKey} onChange={handleApiKeyChange} />
+          <BaseUrlInput baseUrl={baseUrl} onChange={handleBaseUrlChange}/>
         </div>
 
+        <div className="mt-6 text-center text-sm">
+          <APIKeyInput apiKey={apiKey} onChange={handleApiKeyChange}/>
+        </div>
+
+        <br/>
         <div className="mt-2 flex items-center space-x-2">
-          <ModelSelect model={model} onChange={(value) => setModel(value)} />
+          <ModelSelect model={model} onChange={(value) => setModel(value)}/>
 
           <button
             className="w-[140px] cursor-pointer rounded-md bg-violet-500 px-4 py-2 font-bold hover:bg-violet-600 active:bg-violet-700"
             onClick={() => handleTranslate()}
             disabled={loading}
           >
-            {loading ? 'Translating...' : 'Translate'}
+            {loading ? '转译中...' : '转译'}
           </button>
         </div>
 
+        <br/>
         <div className="mt-2 text-center text-xs">
           {loading
-            ? 'Translating...'
+            ? '转译中...'
             : hasTranslated
-            ? 'Output copied to clipboard!'
-            : 'Enter some code and click "Translate"'}
+              ? '输出已复制到剪贴板！'
+              : '请输入输入代码并按下"转译"'}
         </div>
 
         <div className="mt-6 flex w-full max-w-[1200px] flex-col justify-between sm:flex-row sm:space-x-4">
           <div className="h-100 flex flex-col justify-center space-y-2 sm:w-2/4">
-            <div className="text-center text-xl font-bold">Input</div>
+            <div className="text-center text-xl font-bold">输入 Input</div>
 
             <LanguageSelect
               language={inputLanguage}
@@ -202,7 +216,7 @@ export default function Home() {
             )}
           </div>
           <div className="mt-8 flex h-full flex-col justify-center space-y-2 sm:mt-0 sm:w-2/4">
-            <div className="text-center text-xl font-bold">Output</div>
+            <div className="text-center text-xl font-bold">输出 Output</div>
 
             <LanguageSelect
               language={outputLanguage}
@@ -213,9 +227,9 @@ export default function Home() {
             />
 
             {outputLanguage === 'Natural Language' ? (
-              <TextBlock text={outputCode} />
+              <TextBlock text={outputCode}/>
             ) : (
-              <CodeBlock code={outputCode} />
+              <CodeBlock code={outputCode}/>
             )}
           </div>
         </div>
