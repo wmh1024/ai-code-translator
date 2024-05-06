@@ -17,8 +17,8 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [hasTranslated, setHasTranslated] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
-  // const [baseUrl, setBaseUrl] = useState<string>('https://ai.wmhwiki.cn/api');
-  const [baseUrl, setBaseUrl] = useState<string>('');
+  const [baseUrl, setBaseUrl] = useState<string>('https://ai.wmhwiki.cn/api');
+  // const [baseUrl, setBaseUrl] = useState<string>('');
 
   const handleTranslate = async () => {
     const maxCodeLength = model === 'gpt-3.5-turbo' ? 6000 : 12000;
